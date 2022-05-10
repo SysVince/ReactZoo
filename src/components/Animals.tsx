@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { IAnimal } from "../models/IAnimal"
+import { IExtendedAnimal } from "../models/IExtendedAnimal";
 
 const StyledDivContainer = styled.div`
 
@@ -16,13 +17,13 @@ img {
 }
 `;
 
+// Flytta denna save function till Animal.tsx
 export function saveAnimalsList(animals:IAnimal[]){
 
     animals.forEach( (animal) => {
-    // animal.lastFed.slice(0, 19);
     animal.lastFed = animal.lastFed.slice(0, 19);
     });
-    localStorage.setItem("animals", JSON.stringify(animals));
+        localStorage.setItem("animals", JSON.stringify(animals));
 }
 
 export const Animals = () => {
@@ -36,9 +37,26 @@ export const Animals = () => {
         .then( (response) => {
             setAnimals(response.data);
         });
-    },);
+    },[]);
 
-    
+
+    function checkAnimalsToFeed(){
+        const animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
+        let animalFeedingNeeded = "";
+        animalsFromLS.forEach( (animal:IExtendedAnimal) => {
+            if(Date.parse(Date()) - Date.parse(animal.lastFed) > 15000){
+                animalFeedingNeeded += animal.name + ", "
+                
+            }
+        });
+        alert("Dessa djur behöver matas: " + animalFeedingNeeded);
+
+    }
+
+
+    if (localStorage.getItem("animals") === null){
+        localStorage.setItem("animals", JSON.stringify(animals));
+    }
 
 //let dateNowsss = new Date((new Date().toISOString()).slice(0,19));
 //   console.log("added 2h",(Date.parse(dateNow)+7200000));
@@ -50,26 +68,47 @@ export const Animals = () => {
 //   console.log(dateNow);
 
  
-
+//  alert("Testing 1 time");
 
 // saveAnimalsLS([...animals]);
 
-    return (<>
-    {animals.map( (animal) => {
+    let animalsHtml = animals.map( (animal) => {
+
+        // Date.parse(Date()) - Date.parse(animal.lastFed)
 
         return (
             <StyledDivContainer key={animal.id}>
                 <Link to={"/Animal/" + animal.id}>
                 <h3>{animal.name}</h3>
                 <p>{animal.shortDescription}</p>
-                <img src={animal.imageUrl} alt={animal.name}/>
-                
+                <img src={animal.imageUrl} alt={animal.name + " Image"}/>
                 </Link>
-                <button type="button" onClick={() => {saveAnimalsList(animals)}}>SAVE ALL ANIMALS TEST</button>
-            </StyledDivContainer>)
-    })}
 
-        </>);
+            </StyledDivContainer>);
+    });
 
+    // console.log(Date());
+    
+    // return (<>
+    // {animals.map( (animal) => {
+
+    //     return (
+    //         <StyledDivContainer key={animal.id}>
+    //             <Link to={"/Animal/" + animal.id}>
+    //             <h3>{animal.name}</h3>
+    //             <p>{animal.shortDescription}</p>
+    //             <img src={animal.imageUrl} alt={animal.name}/>
+                
+    //             </Link>
+    //             <button type="button" onClick={() => {saveAnimalsList(animals)}}>SAVE ALL ANIMALS TEST</button>
+    //         </StyledDivContainer>);
+    // })}
+
+    //     </>);
+
+return (<>
+<div><button type="button" onClick={checkAnimalsToFeed}>Kolla vilka djur som behöver matas</button></div>
+{animalsHtml}
+</>);
 
 }

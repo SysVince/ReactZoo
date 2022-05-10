@@ -7,9 +7,10 @@ import { Animal } from './components/Animal';
 import { Layout } from './components/Layout';
 import { NotFound } from './components/NotFound';
 
+// Flytta browser Router till index eller ta bort strictmode senare
 function App() {
   return (
-    <BrowserRouter>
+     <BrowserRouter>
     <Routes>
       <Route path='/' element={<Layout/>}>
         <Route index element={<Animals/>}></Route>
@@ -18,7 +19,7 @@ function App() {
       </Route>
     </Routes>
     
-    </BrowserRouter>
+      </BrowserRouter> 
   
   );
 }
