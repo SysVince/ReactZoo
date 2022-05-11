@@ -8,7 +8,7 @@ import { IExtendedAnimal } from "../models/IExtendedAnimal";
 const StyledDivContainer = styled.div`
 
 justify-content: center;
-width: 40rem;
+width: 35rem;
 text-align: center;
 margin: 10px;
 img {
@@ -36,8 +36,18 @@ export const Animals = () => {
         axios.get<IAnimal[]>("https://animals.azurewebsites.net/api/animals")
         .then( (response) => {
             setAnimals(response.data);
+           
         });
+
     },[]);
+
+    useEffect( () => {   
+if (localStorage.getItem("animals") === null && animals.length !== 0 ){
+    localStorage.setItem("animals", JSON.stringify(animals)) 
+    }
+ },[animals]);
+ 
+  
 
 
     function checkAnimalsToFeed(){
@@ -54,9 +64,9 @@ export const Animals = () => {
     }
 
 
-    if (localStorage.getItem("animals") === null){
-        localStorage.setItem("animals", JSON.stringify(animals));
-    }
+
+        
+
 
 //let dateNowsss = new Date((new Date().toISOString()).slice(0,19));
 //   console.log("added 2h",(Date.parse(dateNow)+7200000));
