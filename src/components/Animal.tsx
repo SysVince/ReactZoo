@@ -16,49 +16,50 @@ const StyledDivContainer = styled.div`
 export const Animal = () => {
   const [extAnimal, setExtAnimal] = useState<IExtendedAnimal>({id:0, imageUrl:"",isFed:false,lastFed:"",latinName:"",longDescription:"",medicine:"",name:"",shortDescription:"",yearOfBirth:0});
   const [extAnimals, setExtAnimals] = useState<IExtendedAnimal[]>([]);
-  // const [disableBtn, setDisableBtn] = useState(true);
   let params = useParams();
 
   useEffect(() => {
     const animalsFromLS: IExtendedAnimal[] = JSON.parse(
       localStorage.getItem("animals") || "[]"
     );
+    setExtAnimals(animalsFromLS);
     animalsFromLS.forEach((animal: IExtendedAnimal) => {
       if (params.id === animal.id.toString()) {
         setExtAnimal(animal);
-
-
       }
     });
-    setExtAnimals(animalsFromLS);
+
   }, []);
+
 
   useEffect(() => {
     if (extAnimals.length !== 0) {
       extAnimals.forEach( (animal:IExtendedAnimal, i:number) => {
         if (params.id === animal.id.toString()) {
 
-  
         // 4timmars check (4000 * 60 * 60)
-        setTimeout(() => {
+         setTimeout(() => {
           if (
             Date.parse(Date()) - Date.parse(animal.lastFed) >
-            10000 //4000 * 60 * 60
+            4000 * 60 * 60
           ) {
-            // setDisableBtn(false);
-            extAnimals[i] = {...extAnimal, isFed : false};
-            localStorage.setItem("animals", JSON.stringify(extAnimals));
+             extAnimals[i] = {...extAnimal, isFed : false};
+             setExtAnimals(extAnimals);
+             localStorage.setItem("animals", JSON.stringify(extAnimals));
+             setExtAnimal({...extAnimal, isFed : false});
             alert(animal.name + " behöver matas!");
           }
-        }, 500);
+         }, 500);
   
         }
       })
-              
+
 
     }
-  }, [extAnimals]);
+  },[extAnimals]);
 
+  console.log("spammas det?");
+  
 
 
   function feedAnimal() {
@@ -73,14 +74,9 @@ export const Animal = () => {
           setExtAnimal(animal);
       }
     });
-
-    localStorage.setItem("animals", JSON.stringify(extAnimals));
     setExtAnimals(extAnimals);
+    localStorage.setItem("animals", JSON.stringify(extAnimals));
 
-    // setDisableBtn(true);
-    // setTimeout(() => {
-    //   setDisableBtn(false);
-    // }, 4000 * 60 * 60); // (4000 * 60 * 60) = är 4 timmar
   }
 
   return (
