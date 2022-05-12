@@ -27,7 +27,7 @@ export const Animals = () => {
       .then((response) => {
         setAnimals(response.data);
       });
-  }, []);
+  });
 
   useEffect(() => {
     if (localStorage.getItem("animals") === null && animals.length !== 0) {

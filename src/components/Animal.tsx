@@ -45,7 +45,7 @@ export const Animal = () => {
 
   function feedAnimal() {
     extAnimals.forEach((animal: IExtendedAnimal) => {
-      if (params.id == animal.id.toString()) {
+      if (params.id === animal.id.toString()) {
         animal.isFed = true;
         animal.lastFed = new Date(
           new Date().toString().split("GMT")[0] + " UTC"
@@ -75,7 +75,7 @@ export const Animal = () => {
         <StyledButton color="green" onClick={feedAnimal} disabled={disableBtn}>Mata djur</StyledButton>
       </div>
 
-      <img src={extAnimal?.imageUrl} alt={extAnimal?.name} />
+      <img src={extAnimal?.imageUrl} alt={extAnimal?.name + " Image"} />
     </StyledDivContainer>
   );
 };
