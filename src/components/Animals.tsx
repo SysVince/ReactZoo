@@ -42,7 +42,7 @@ export const Animals = () => {
     const animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
     let animalFeedingNeeded = "";
     animalsFromLS.forEach((animal: IAnimal) => {
-      if (Date.parse(Date()) - Date.parse(animal.lastFed) > 4000 * 60 * 60) {
+      if (animal.isFed===false) {
         animalFeedingNeeded += animal.name + ", ";
       }
     });

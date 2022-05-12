@@ -14,9 +14,9 @@ const StyledDivContainer = styled.div`
 `;
 
 export const Animal = () => {
-  const [extAnimal, setExtAnimal] = useState<IExtendedAnimal>();
+  const [extAnimal, setExtAnimal] = useState<IExtendedAnimal>({id:0, imageUrl:"",isFed:false,lastFed:"",latinName:"",longDescription:"",medicine:"",name:"",shortDescription:"",yearOfBirth:0});
   const [extAnimals, setExtAnimals] = useState<IExtendedAnimal[]>([]);
-  const [disableBtn, setDisableBtn] = useState(true);
+  // const [disableBtn, setDisableBtn] = useState(true);
   let params = useParams();
 
   useEffect(() => {
@@ -27,21 +27,39 @@ export const Animal = () => {
       if (params.id === animal.id.toString()) {
         setExtAnimal(animal);
 
-        // 4timmars check (4000 * 60 * 60)
-        setTimeout(() => {
-          if (
-            Date.parse(Date()) - Date.parse(animal.lastFed) >
-            4000 * 60 * 60
-          ) {
-            setDisableBtn(false);
 
-            alert(animal.name + " behöver matas!");
-          }
-        }, 500);
       }
     });
     setExtAnimals(animalsFromLS);
   }, []);
+
+  useEffect(() => {
+    if (extAnimals.length !== 0) {
+      extAnimals.forEach( (animal:IExtendedAnimal, i:number) => {
+        if (params.id === animal.id.toString()) {
+
+  
+        // 4timmars check (4000 * 60 * 60)
+        setTimeout(() => {
+          if (
+            Date.parse(Date()) - Date.parse(animal.lastFed) >
+            10000 //4000 * 60 * 60
+          ) {
+            // setDisableBtn(false);
+            extAnimals[i] = {...extAnimal, isFed : false};
+            localStorage.setItem("animals", JSON.stringify(extAnimals));
+            alert(animal.name + " behöver matas!");
+          }
+        }, 500);
+  
+        }
+      })
+              
+
+    }
+  }, [extAnimals]);
+
+
 
   function feedAnimal() {
     extAnimals.forEach((animal: IExtendedAnimal) => {
@@ -52,16 +70,17 @@ export const Animal = () => {
         )
           .toISOString()
           .slice(0, 19);
+          setExtAnimal(animal);
       }
     });
 
     localStorage.setItem("animals", JSON.stringify(extAnimals));
     setExtAnimals(extAnimals);
 
-    setDisableBtn(true);
-    setTimeout(() => {
-      setDisableBtn(false);
-    }, 4000 * 60 * 60); // (4000 * 60 * 60) = är 4 timmar
+    // setDisableBtn(true);
+    // setTimeout(() => {
+    //   setDisableBtn(false);
+    // }, 4000 * 60 * 60); // (4000 * 60 * 60) = är 4 timmar
   }
 
   return (
@@ -72,7 +91,7 @@ export const Animal = () => {
       <div>{extAnimal?.longDescription}</div>
       <div>
         Matades senast: {extAnimal?.lastFed}{" "}
-        <StyledButton color="green" onClick={feedAnimal} disabled={disableBtn}>Mata djur</StyledButton>
+        <StyledButton color="green" onClick={feedAnimal} disabled={extAnimal.isFed}>Mata djur</StyledButton>
       </div>
 
       <img src={extAnimal?.imageUrl} alt={extAnimal?.name + " Image"} />
