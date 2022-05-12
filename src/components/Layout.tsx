@@ -8,7 +8,7 @@ display: flex;
 justify-content: center;
 align-items: center;
 li{
-    display: b;
+    list-style-type: none;
 }
 `;
 
@@ -49,7 +49,6 @@ return (
     </StyledSection>
     <StyledFooter>
         <ul>
-            <li>KUNDTJÄNST</li>
             <li>INFORMATION</li>
             <li>KONTAKTA OSS</li>
         </ul>
