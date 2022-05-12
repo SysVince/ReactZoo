@@ -18,13 +18,6 @@ img {
 `;
 
 // Flytta denna save function till Animal.tsx
-export function saveAnimalsList(animals:IAnimal[]){
-
-    animals.forEach( (animal) => {
-    animal.lastFed = animal.lastFed.slice(0, 19);
-    });
-        localStorage.setItem("animals", JSON.stringify(animals));
-}
 
 export const Animals = () => {
     const [animals, setAnimals] = useState<IAnimal[]>([])
@@ -43,6 +36,9 @@ export const Animals = () => {
 
     useEffect( () => {   
 if (localStorage.getItem("animals") === null && animals.length !== 0 ){
+              animals.forEach( (animal) => {
+          animal.lastFed = animal.lastFed.slice(0, 19);
+          });
     localStorage.setItem("animals", JSON.stringify(animals)) 
     }
  },[animals]);
@@ -54,7 +50,7 @@ if (localStorage.getItem("animals") === null && animals.length !== 0 ){
         const animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
         let animalFeedingNeeded = "";
         animalsFromLS.forEach( (animal:IExtendedAnimal) => {
-            if(Date.parse(Date()) - Date.parse(animal.lastFed) > 15000){
+            if(Date.parse(Date()) - Date.parse(animal.lastFed) > (4000 * 60 * 60)){
                 animalFeedingNeeded += animal.name + ", "
                 
             }
@@ -63,29 +59,7 @@ if (localStorage.getItem("animals") === null && animals.length !== 0 ){
 
     }
 
-
-
-        
-
-
-//let dateNowsss = new Date((new Date().toISOString()).slice(0,19));
-//   console.log("added 2h",(Date.parse(dateNow)+7200000));
-//    console.log("dateNow ",dateNow);
-//   new Date().getSeconds()
-//  console.log("test: ", new Date((new Date().toISOString())).toISOString());
-// console.log(new Date(new Date().toString().split("GMT")[0]+" UTC").toISOString());
-// let dateNow = (new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString()).slice(0,19)
-//   console.log(dateNow);
-
- 
-//  alert("Testing 1 time");
-
-// saveAnimalsLS([...animals]);
-
     let animalsHtml = animals.map( (animal) => {
-
-        // Date.parse(Date()) - Date.parse(animal.lastFed)
-
         return (
             <StyledDivContainer key={animal.id}>
                 <Link to={"/Animal/" + animal.id}>
@@ -97,24 +71,6 @@ if (localStorage.getItem("animals") === null && animals.length !== 0 ){
             </StyledDivContainer>);
     });
 
-    // console.log(Date());
-    
-    // return (<>
-    // {animals.map( (animal) => {
-
-    //     return (
-    //         <StyledDivContainer key={animal.id}>
-    //             <Link to={"/Animal/" + animal.id}>
-    //             <h3>{animal.name}</h3>
-    //             <p>{animal.shortDescription}</p>
-    //             <img src={animal.imageUrl} alt={animal.name}/>
-                
-    //             </Link>
-    //             <button type="button" onClick={() => {saveAnimalsList(animals)}}>SAVE ALL ANIMALS TEST</button>
-    //         </StyledDivContainer>);
-    // })}
-
-    //     </>);
 
 return (<>
 <div><button type="button" onClick={checkAnimalsToFeed}>Kolla vilka djur som behöver matas</button></div>

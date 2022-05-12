@@ -47,7 +47,13 @@ return (
         <Outlet/>
     </StyledMain>
     </StyledSection>
-    <StyledFooter>FOOOOTER</StyledFooter>
+    <StyledFooter>
+        <ul>
+            <li>KUNDTJÄNST</li>
+            <li>INFORMATION</li>
+            <li>KONTAKTA OSS</li>
+        </ul>
+    </StyledFooter>
     </div>
  );
 }

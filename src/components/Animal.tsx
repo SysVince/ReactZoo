@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components";
 import { IExtendedAnimal } from "../models/IExtendedAnimal";
-import { saveAnimalsList } from "./Animals";
 
 
 const StyledDivContainer = styled.div`
@@ -14,77 +13,75 @@ img{
 `;
 
 
-
 export const Animal = () => {
-    const [extAnimal, setExtAnimal] = useState<IExtendedAnimal>()
-    const [disableBtn, setDisableBtn] = useState(false);
+    const [extAnimal, setExtAnimal] = useState<IExtendedAnimal>();
+    const [extAnimals, setExtAnimals] = useState<IExtendedAnimal[]>([]);
+    const [disableBtn, setDisableBtn] = useState(true);
     let params = useParams();
 
 
    useEffect( () => {
-    const animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
-        animalsFromLS.forEach( (animal:IExtendedAnimal) => {
+    
+      const animalsFromLS:IExtendedAnimal[] = JSON.parse(localStorage.getItem("animals") || "[]");
+      animalsFromLS.forEach( (animal:IExtendedAnimal) => {
             if(params.id === animal.id.toString()){
                 setExtAnimal(animal);
 
-                // OBS Denna kod körs endast engång per refresh på sidan, 4timmars check (4000 * 60 * 60)
-                const timer = setTimeout( () => {
-                    if(Date.parse(Date()) - Date.parse(animal.lastFed) > 10000){
+                // 4timmars check (4000 * 60 * 60)
+                setTimeout( () => {
+                    if(Date.parse(Date()) - Date.parse(animal.lastFed) > (5000)){
+                        animal.isFed=false;
+                        setDisableBtn(false);
                         console.log("Längre än 10 sekunder sedan");
-                        alert("Djuret behöver matas!");
-                    }
+                        alert(animal.name +" behöver matas!");
+                        console.log("test", animalsFromLS);
+                        
+                    } 
 
-                },1000);
-                return () => clearTimeout(timer);
+                },500);
+                
             }
         });
+        setExtAnimals(animalsFromLS);
+        
 
 },[]);
 
-// setTimeout(() => {
-//     console.log("testar");
-    
-// });
+  useEffect(()=>{
 
-// useEffect ( () => {
-//     const timer = setTimeout( () => {
-//         console.log("testar"); 
-//     },1000);
-//     return () => clearTimeout(timer);
-// },[]);
+      if (extAnimals.length !== 0) {
+         localStorage.setItem("animals", JSON.stringify(extAnimals));
 
-// setTimeout( () => {
-//     const animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
-//     animalsFromLS.forEach( (animal:IExtendedAnimal) => {
-//     if(Date.parse(Date()) - Date.parse(animal.lastFed) > 15000){
-//         console.log("Längre än 15 sekunder sedan");
-//         alert("Djuret behöver matas!")
-//     }});
+      }
 
-// },1000) //efter en sekund ska popupp komma
+     
+
+  },[extAnimals]);
+
 
 
     function feedAnimal(){
-        let animalsFromLS = JSON.parse(localStorage.getItem("animals") || "[]");
-        
-        animalsFromLS.forEach( (animal:IExtendedAnimal) => {
+
+        extAnimals.forEach( (animal:IExtendedAnimal) => {
             if( params.id == animal.id.toString()){
 
                 animal.isFed = true;
                 animal.lastFed = (new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString()).slice(0,19);
-                setExtAnimal(animal);
+
+                // setExtAnimal(animal);
                  
             }
 
         });
-        saveAnimalsList([...animalsFromLS]);
-        console.log("animalfromLS :", animalsFromLS);
-
+        
+        localStorage.setItem("animals", JSON.stringify(extAnimals));
+        console.log("animalfromLS :", extAnimals);
+        setExtAnimals(extAnimals);
 
         setDisableBtn(true);
         setTimeout( () => {
             setDisableBtn(false);
-        }, 10000) //10 sekunder i dagsläget (4000 * 60 * 60) = är 3 timmar
+        }, (10000)) // (4000 * 60 * 60) = är 4 timmar
     }
 
 
