@@ -9,8 +9,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-//Lägg BrowserRouter här istället eller ta bort strict <BrowserRouter></BrowserRouter> 
-//Då den renderar components två ggr för dev felsökning
+
 root.render(
    <React.StrictMode>
     <App />

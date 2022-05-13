@@ -58,7 +58,6 @@ export const Animal = () => {
     }
   },[extAnimals]);
 
-  console.log("spammas det?");
   
 
 
