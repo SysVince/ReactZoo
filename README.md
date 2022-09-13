@@ -1,3 +1,9 @@
+# Detta project hämtar JSON djur från: https://animals.azurewebsites.net/api/animals
+På hemsidan så kan man klicka på varje djur och mata de om det behövs.
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
